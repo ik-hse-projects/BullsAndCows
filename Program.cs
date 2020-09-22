@@ -9,24 +9,6 @@ namespace BullsAndCows
         static readonly Random RandomGenerator = new Random();
 
         /// <summary>
-        ///     Удаляет из списка и возвращает элемент с указанным индексом за константное время.
-        ///     Не сохраняет порядок элементов!
-        /// </summary>
-        static int SwapAndPop(List<int> list, int index)
-        {
-            var result = list[index];
-            var lastIdx = list.Count - 1;
-
-            // Replace item with last element of list
-            list[index] = list[lastIdx];
-
-            // Remove last element of list (O(1))
-            list.RemoveAt(lastIdx);
-
-            return result;
-        }
-
-        /// <summary>
         ///     Генерирует и возвращает указанное количество неповторяющихся цифр
         /// </summary>
         /// <param name="length">Количество цифр. Не может превышать 9</param>
@@ -35,9 +17,9 @@ namespace BullsAndCows
         /// </exception>
         static int[] GetRandomDigits(int length)
         {
-            var digits = new List<int> {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+            var availableDigits = new List<int> {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-            if (length < 0 || length > digits.Count)
+            if (length < 0 || length > availableDigits.Count)
             {
                 throw new ArgumentOutOfRangeException(nameof(length));
             }
@@ -45,9 +27,11 @@ namespace BullsAndCows
             var result = new int[length];
             for (var i = 0; i < length; i++)
             {
-                var digitIndex = RandomGenerator.Next(0, digits.Count);
-                var digit = SwapAndPop(digits, digitIndex);
-                result[i] = digit;
+                var digitIndex = RandomGenerator.Next(0, availableDigits.Count);
+                result[i] = availableDigits[digitIndex];
+
+                // Remove chosen digit from pool, so it won't be selected again:
+                availableDigits.RemoveAt(digitIndex);
             }
 
             return result;
@@ -83,31 +67,35 @@ namespace BullsAndCows
             }
 
             return result;
-        } 
+        }
 
         /// <summary>
         /// Запрашивает у пользователя требуемое количество цифр до тех пор пока он не введет корректное число.
         /// </summary>
         static int[] AskUser(int length)
         {
-            while(true)
+            while (true)
             {
                 Console.Write("Ваша догадка: ");
                 var input = Console.ReadLine();
 
-                // Trim whitespaces. User should not worry about few invisible characters.
-                input = input.Trim();
-
-                var digits = SplitNumber(input, length);
-                if (digits != null)
+                // Documentation says that Console.ReadLine() may return null.
+                if (input != null)
                 {
-                    return digits;
+                    // Trim whitespaces. User should not worry about few invisible characters.
+                    input = input.Trim();
+
+                    var digits = SplitNumber(input, length);
+                    if (digits != null)
+                    {
+                        return digits;
+                    }
                 }
 
                 Console.WriteLine("    Введите корректное число.");
             }
         }
-        
+
         /// <summary>
         /// Играет ровно один раунд с пользователем до тех пор, пока он не победит.
         /// </summary>
