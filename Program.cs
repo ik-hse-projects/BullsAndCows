@@ -17,33 +17,33 @@ namespace BullsAndCows
         /// </exception>
         static int[] GetRandomDigits(int length)
         {
-			// Check that this function provided with correct length.
-			// Otherwise throw an exception and crash application.
+            // Check that this function provided with correct length.
+            // Otherwise throw an exception and crash application.
             if (length < 0 || length > 9)
             {
                 throw new ArgumentOutOfRangeException(nameof(length));
             }
 
-			// This list contains digits that can be placed to the result.
-			// But it does not contain zero (yet), because first digit can't be zero.
+            // This list contains digits that can be placed to the result.
+            // But it does not contain zero (yet), because first digit can't be zero.
             var availableDigits = new List<int> {1, 2, 3, 4, 5, 6, 7, 8, 9};
 
             var result = new int[length];
             for (var i = 0; i < length; i++)
             {
-				// Select random digit from pool.
+                // Select random digit from pool.
                 var digitIndex = RandomGenerator.Next(0, availableDigits.Count);
 
-				// And place it to the result.
+                // And place it to the result.
                 result[i] = availableDigits[digitIndex];
 
                 // Then remove chosen digit from pool, so it won't be selected again.
                 availableDigits.RemoveAt(digitIndex);
 
-				if (i == 0) {
-					// Zero can be chosen after we generated first digit.
-					availableDigits.Add(0);
-				}
+                if (i == 0) {
+                    // Zero can be chosen after we generated first digit.
+                    availableDigits.Add(0);
+                }
             }
 
             return result;
@@ -84,29 +84,30 @@ namespace BullsAndCows
         /// <summary>
         /// Запрашивает у пользователя корректную длину числа.
         /// </summary>
-		static int AskLength() {
-			while (true) {
-				Console.Write("Введите длину загадываемого числа:");
-				var input = Console.ReadLine();
-				if (input == null) {
-					continue;
-				}
+        static int AskLength() {
+            while (true) {
+                Console.Write("Введите длину загадываемого числа:");
+                var input = Console.ReadLine();
+                if (input == null) {
+                    continue;
+                }
 
-				input = input.Trim();
+                input = input.Trim();
 
-				var isParsed = int.TryParse(input, out var number);
-				if (!isParsed) {
-					Console.WriteLine("Нужно ввести число");
-					continue;
-				}
-				if (!isInRange) {
-					Console.WriteLine("Число должно быть больше нуля и не более девяти");
-					continue;
-				}
+                var isParsed = int.TryParse(input, out var number);
+                if (!isParsed) {
+                    Console.WriteLine("Нужно ввести число");
+                    continue;
+                }
+                var isInRange = number > 0 && number < 10;
+                if (!isInRange) {
+                    Console.WriteLine("Длина должна быть больше нуля и не более девяти");
+                    continue;
+                }
 
-				return number;
-			}
-		}
+                return number;
+            }
+        }
 
         /// <summary>
         /// Запрашивает у пользователя требуемое количество цифр до тех пор пока он не введет корректное число.
@@ -179,7 +180,7 @@ namespace BullsAndCows
             string choice;
             do
             {
-				var length = AskLength();
+                var length = AskLength();
 
                 PlaySingleGame(length);
 
