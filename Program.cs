@@ -86,7 +86,7 @@ namespace BullsAndCows
         /// </summary>
         static int AskLength() {
             while (true) {
-                Console.Write("Введите длину загадываемого числа:");
+                Console.Write("Введите длину загадываемого числа: ");
                 var input = Console.ReadLine();
                 if (input == null) {
                     continue;
@@ -110,6 +110,20 @@ namespace BullsAndCows
         }
 
         /// <summary>
+        /// Возвращает, есть ли в переданном массиве повторяющиеся числа
+        /// </summary>
+        static bool ContainsDuplicates(int[] numbers) {
+            for (var i = 0; i < numbers.Length; i++) {
+                for (var j = i+1; j<numbers.Length; j++) {
+                    if (numbers[i] == numbers[j]) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Запрашивает у пользователя требуемое количество цифр до тех пор пока он не введет корректное число.
         /// </summary>
         static int[] AskUser(int length)
@@ -126,13 +140,19 @@ namespace BullsAndCows
                     input = input.Trim();
 
                     var digits = SplitNumber(input, length);
-                    if (digits != null)
+                    if (digits == null)
+                    {
+                        Console.WriteLine("    Введите корректное число.");
+                    }
+                    else if (ContainsDuplicates(digits))
+                    {
+                        Console.WriteLine("    Число не должно содержать повторяющихся цифр");
+                    }
+                    else
                     {
                         return digits;
                     }
                 }
-
-                Console.WriteLine("    Введите корректное число.");
             }
         }
 
@@ -177,6 +197,13 @@ namespace BullsAndCows
 
         static void Main()
         {
+            Console.WriteLine("Это игра «Быки и коровы»!");
+            Console.WriteLine("Компьютер загадывает число, а игрок должен будет его отгадать.");
+            Console.WriteLine("Гарантируется, что все цифры в загаданном числе различны.");
+            Console.WriteLine("Также и игроку нельзя вводить повторяющиеся цифры, это слишком облегчает игру.");
+            Console.WriteLine("Быки: количество правильных цифр на правильных местах.");
+            Console.WriteLine("Коровы: количество цифр, которые присутствуют где-то в загаданном числе, но не на том месте.");
+            Console.WriteLine("");
             string choice;
             do
             {
